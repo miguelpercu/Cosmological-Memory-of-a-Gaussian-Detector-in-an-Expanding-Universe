@@ -1,0 +1,915 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{natbib}
+
+\title{Cosmological Memory of a Gaussian Detector in an Expanding Universe:\\
+Finite-$N$ Dynamics and the Breakdown of the Markovian Approximation in FRW}
+
+\author{Miguel \'Angel Percudani\thanks{Independent researcher, Pu\'an, Buenos Aires, Argentina.
+Email: \texttt{miguel.percudani@yahoo.com.ar}.
+ORCID: 0009-0007-1748-3212.}}
+
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present a 3+1D Wightman-based memory analysis of a Gaussian detector
+coupled to a scalar field through a matter-dominated expansion history.
+The calculation is framed via the modular flow of Tomita--Takesaki and
+the quantum Fisher information $F_Q$ of the detector's reduced state,
+testing the intuition of the Universal Applied Time (UAT) framework
+that time is a measure of causal connection.
+
+Three results are reported. First, the Unruh--DeWitt consistency check
+(KMS condition) passes at machine precision ($\max|\Delta W/W|
+\lesssim 10^{-14}$ for accelerations $a \in \{0.5, 1.0, 2.0\}$), which
+validates the numerical apparatus. Second, the maximum information
+mutual $I(O{:}\phi)_{\max}$ between detector and field converges with
+$N$ to approximately $0.26$ nats, while the power-law exponent $\alpha$
+of the Fisher-information decay does \emph{not} converge with $N$.
+We show that this non-convergence is a physical consequence of the
+finite-dimensional unitary dynamics (quasi-periodic orbits, no genuine
+decay), not a numerical artefact.
+
+Third, we compare two continuum models. A \emph{static-bath} quantum
+Brownian motion model with Ohmic spectral density gives $\Gamma =
+\pi\eta/2$, independent of temperature and cutoff. However, an
+\emph{exact} treatment using the Wightman function of a scalar field
+in FRW shows that the effective damping rate $\gamma_{\rm eff}$ decays
+with the expansion and exhibits memory effects (sign-changing
+oscillations, associated with particle creation) in the matter and
+dark-energy regimes. The global decay is robust against the choice of
+UV regulator; the precise location of the sign change is
+scheme-dependent. The Ohmic closure is mathematically exact but
+describes the wrong system: a detector coupled to an external static
+bath, not to a cosmological field.
+\end{abstract}
+
+\section{Introduction}
+
+The Universal Applied Time (UAT) framework---also referred to by its
+Spanish acronym TAU, \emph{Tiempo Aplicable Unificado}---was developed
+independently by the author during 2025 and proposed that the time
+assigned to an event is a measure of the causal connection between
+that event and an observer. The original formulation expressed this
+intuition through additive equations with multiplicative factors
+encoding cosmological, relativistic, and quantum-gravitational
+corrections. Systematic tests against DESI DR2 baryon acoustic
+oscillation data and Pantheon supernova data established that the
+additive formalism was not competitive with $\Lambda$CDM, and
+subsequent analysis identified the root cause as a structural
+incompatibility between the relationalist intuition and the additive
+formalism \citep{Percudani2026}.
+
+The present paper does not attempt to salvage the original equations.
+Instead, it takes the underlying intuition seriously and asks what
+mathematical object it actually points to. The answer---developed in
+collaboration with automated reasoning tools and formalised in a
+companion specification---is that the intuition reduces, in the
+calculable regime, to a statement about the \emph{informational cost}
+of maintaining temporal resolution in an expanding universe.
+
+It is well established that the Markovian approximation for quantum
+detectors fails in curved spacetimes
+\citep{LoukoSatz2006,Fukuma2014,Burgess2020,Waghmare2025}, and that
+non-Markovianity and memory effects are standard features of open
+quantum systems \citep{Breuer2009,Breuer2016}. In particular,
+\citet{HsiangHu2021} have shown that an Unruh--DeWitt detector with
+harmonic oscillator internal degrees of freedom, coupled to a quantum
+field in an expanding universe, exhibits non-Markovian memory effects
+associated with the squeezing of the field by the cosmic dynamics. The
+contribution of the present work is not to claim the first
+demonstration of non-Markovianity in cosmology. It is to provide a
+specific 3+1D Gaussian-detector calculation across a full
+matter-dominated expansion history, framed via the quantum Fisher
+information and the modular flow, and to compare explicitly against
+the Ohmic quantum Brownian motion closure, showing that the latter is
+exact for the wrong system.
+
+\subsection{Relation to the modular program}
+\label{sec:relation}
+
+The technical framework of this paper is the modular theory of
+Tomita--Takesaki \citep{Connes1973, Takesaki1970}, as applied to
+quantum clocks in cosmological settings by recent work
+\citep{Chandrasekaran2022, Chen2024, Chen2026, Speranza2025,
+DeVuyst2025, Gomez2022, Espindola2026}.
+
+The UAT/TAU framework was developed independently by the author in
+2025, from a starting point in cosmological numerical modeling and
+direct communication with experimental collaborations. Its public
+development record is documented in Section~\ref{sec:records}. For
+the reader's reference, the following dates are relevant:
+
+\begin{itemize}
+\item Chen and Penington formalised the modular treatment of
+cosmological clocks in June 2024 \citep{Chen2024}.
+\item De Vuyst and collaborators developed the crossed-product and
+quantum-reference-frame formulation of gravitational entropy in
+December 2024 \citep{DeVuyst2025}.
+\item Speranza proposed the intrinsic cosmological observer in
+April 2025 \citep{Speranza2025}.
+\item The UAT/TAU framework was released publicly on GitHub in June
+2025 and on Zenodo in November 2025 (Section~\ref{sec:records}).
+\item Chen and collaborators extended the crossed-product approach
+to covariant observers in de Sitter space in November 2025
+\citep{Chen2026}.
+\end{itemize}
+
+The convergence of UAT with the modular program is therefore
+independent and parallel. The framework does not claim priority over
+\citet{Chen2024, DeVuyst2025}, whose work predates it. What UAT
+contributes is a phenomenological intuition developed outside the
+algebraic quantum field theory community, from a starting point in
+cosmological numerical modeling. The present paper takes that
+intuition, translates it into the language of modular theory, and
+provides its first quantitative test.
+
+\section{What UAT/TAU Really Points To}
+\label{sec:core}
+
+Before the technical development, we state the interpretive claim in
+one sentence, because it is the only claim this paper endorses:
+
+\begin{quote}
+\textbf{The capacity of a quantum observer to resolve cosmic time is
+governed by its mutual information with the field.}
+\end{quote}
+
+This is the honest translation of the original UAT/TAU intuition to
+the language of modular theory and quantum information. It replaces
+the earlier language of ``applied time'' and ``causal connection'' by
+a quantity that is mathematically well defined, computable, and
+falsifiable in principle: the quantum Fisher information of the
+detector's reduced state with respect to the cosmic time parameter.
+
+No stronger claim is made in this paper. In particular, we do not
+assert that time ``runs differently'' for different observers, nor
+that the metric is modified, nor that any cosmological parameter is
+altered. The observable is the resolution of a clock, not the rate of
+time.
+
+\section{Model}
+\label{sec:model}
+
+\subsection{Background and field}
+
+We work in a spatially flat FRW universe with line element
+\begin{equation}
+ds^2 = -dt^2 + a^2(t)\,d\vec{x}^2,
+\end{equation}
+and adopt the matter-dominated regime $a(\eta) = \eta^2$ in
+conformal time $\eta$, which is sufficient for the numerical
+demonstration. A real massive scalar field $\phi$ of mass
+$m_\phi \ll H_0$ is expanded in comoving modes,
+\begin{equation}
+\phi(\vec{x}, \eta) = \frac{1}{\sqrt{L^3}} \sum_{\vec{k}}
+\left[ a_{\vec{k}} \phi_k(\eta) e^{i \vec{k} \cdot \vec{x}} + \text{h.c.} \right],
+\end{equation}
+with the mode functions satisfying the standard FRW equation. The
+field is prepared in the Bunch--Davies vacuum at early times.
+
+\subsection{Detector}
+
+The observer is modelled as a harmonic oscillator of frequency
+$\omega_0$ with canonical quadratures $R_O = (x_O, p_O)$ obeying
+$[x_O, p_O] = i$ ($\hbar = 1$). We use a harmonic oscillator rather
+than a two-level system because the bilinear coupling
+\begin{equation}
+H_{\rm int} = g\, x_O \, \phi(\vec{x}_O, \eta)
+\end{equation}
+preserves Gaussianity of the joint state, reducing the entire problem
+to matrix algebra on covariance matrices. A two-level detector
+coupled through $\sigma_x$ would break Gaussianity and would in
+addition be subject to the bound $I(O{:}\phi) \le \ln 2$, which
+truncates the analysis prematurely.
+
+\subsection{Covariance matrix formalism}
+
+The joint state is Gaussian and fully characterised by the covariance
+matrix
+\begin{equation}
+\sigma_{ij} = \tfrac{1}{2} \langle \{R_i - \langle R_i \rangle, R_j - \langle R_j \rangle\} \rangle,
+\end{equation}
+with $R = (x_O, p_O, x_1, p_1, \dots, x_N, p_N)$ for $N$ field modes
+retained. The symplectic eigenvalue $\nu_m \ge 1/2$ of each
+$2\times 2$ block determines the von Neumann entropy
+\begin{equation}
+S(\nu) = (\nu + \tfrac{1}{2}) \ln(\nu + \tfrac{1}{2}) - (\nu - \tfrac{1}{2}) \ln(\nu - \tfrac{1}{2}).
+\end{equation}
+The information mutual between the detector and the field is
+\begin{equation}
+I(O{:}\phi) = S(\sigma_O) + S(\sigma_\phi) - S(\sigma_{\rm total}).
+\end{equation}
+
+\subsection{Quantum Fisher information}
+
+The Fisher information of the detector state with respect to a time
+parameter $\lambda$ is, for a Gaussian state,
+\begin{equation}
+F_Q^{(\lambda)} = \tfrac{1}{2} (\partial_\lambda \sigma)^T (\sigma \otimes \sigma - \tfrac{1}{4} \Omega \otimes \Omega)^{-1} (\partial_\lambda \sigma),
+\label{eq:FQ}
+\end{equation}
+where $\Omega$ is the symplectic form and the derivative is taken
+with respect to $\lambda$. The Cram\'er--Rao bound then gives the
+resolution limit
+\begin{equation}
+\Delta \lambda \ge \frac{1}{\sqrt{F_Q^{(\lambda)}}}.
+\end{equation}
+
+Two distinct time parameters are physically relevant:
+\begin{itemize}
+\item the detector's proper time $\tau_O$, and
+\item the cosmic (conformal or scale-factor) time $\eta$ or $t$.
+\end{itemize}
+For an expanding universe, $dt = a\, d\eta$, so
+$F_Q^{(t)} = F_Q^{(\eta)}/a^2$. Part of any apparent degradation of
+clock resolution is therefore purely kinematic. Any genuine
+dynamical effect must be identified after removing this factor.
+
+\section{Unruh--DeWitt Consistency Check}
+\label{sec:kms}
+
+Before computing in FRW, we verify the apparatus against the
+canonical result for an accelerated detector in Minkowski space. The
+Wightman function along a uniformly accelerated trajectory in $1+1$
+dimensions is
+\begin{equation}
+W(\Delta\tau) = -\frac{1}{4\pi} \ln\!\left[ -\frac{4}{a^2} \sinh^2\!\left( \frac{a\,\Delta\tau}{2} \right) - i\varepsilon \right].
+\end{equation}
+The KMS condition for a thermal state at inverse temperature
+$\beta = 2\pi/a$ requires
+\begin{equation}
+W(\Delta\tau - i\beta) = W(-\Delta\tau).
+\end{equation}
+We test this identity numerically for
+$a \in \{0.5, 1.0, 2.0\}$ and $\tau \in [0.01, 5.0]$. The results are
+reported in Table~\ref{tab:kms}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccc}
+\toprule
+$a$ & $T = a/2\pi$ & $\max |\Delta W / W|$ \\
+\midrule
+$0.5$ & $0.0796$ & $1.0 \times 10^{-14}$ \\
+$1.0$ & $0.1592$ & $5.0 \times 10^{-15}$ \\
+$2.0$ & $0.3183$ & $2.6 \times 10^{-15}$ \\
+\bottomrule
+\end{tabular}
+\caption{KMS condition test. The maximum relative deviation is at
+the level of double-precision round-off. The apparatus is correct.}
+\label{tab:kms}
+\end{table}
+
+The KMS test passes at machine precision. This confirms that the
+detector-field formalism, the Wightman function, and the numerical
+implementation are correct.
+
+\section{Results in a Finite Truncation}
+\label{sec:finiteN}
+
+\subsection{Setup}
+
+We take $N$ field modes with comoving momenta
+$k_j = 2\pi j/L$, $j = 1, \dots, N$, on a comoving box of size
+$L = 2\pi$. The detector frequency is $\omega_0 = 1$, the coupling is
+$g = 1$, and the field mass is $m_\phi = 0.25$. The conformal time
+runs from $\eta_i = 2$ to $\eta_f = 7$, corresponding to
+$a \in [4, 49]$ in the matter-dominated background $a(\eta) = \eta^2$.
+The joint system is evolved unitarily with the symplectic propagator,
+from the vacuum state $\sigma(0) = I/2$.
+
+\subsection{Information mutual and its convergence}
+
+The maximum information mutual between detector and field during the
+evolution is reported in Table~\ref{tab:Imax}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\toprule
+$N$ & $\nu_{\max}$ & $I(O{:}\phi)_{\max}$ & $\alpha$ (envelope fit) \\
+\midrule
+$5$  & $0.5252$ & $0.236$ & $-0.04$ \\
+$10$ & $0.5269$ & $0.249$ & $+0.42$ \\
+$20$ & $0.5277$ & $0.255$ & $-1.02$ \\
+$40$ & $0.5283$ & $0.259$ & $-1.49$ \\
+$80$ & $0.5285$ & $0.261$ & $-0.66$ \\
+\bottomrule
+\end{tabular}
+\caption{Convergence of observables with the number $N$ of retained
+field modes. The information mutual $I(O{:}\phi)_{\max}$ converges
+smoothly. The power-law exponent $\alpha$ of the Fisher information
+does not converge and changes sign.}
+\label{tab:Imax}
+\end{table}
+
+Two facts emerge:
+
+\begin{itemize}
+\item $I(O{:}\phi)_{\max}$ converges monotonically to approximately
+$0.26$ nats as $N$ increases. This is a stable, well-defined
+observable of the model.
+
+\item The exponent $\alpha$ fitted to the envelope of $F_Q^{(\eta)}$ in
+the window $a \in [15, 35]$ does not converge. It changes sign between
+successive values of $N$.
+\end{itemize}
+
+\subsection{Interpretation of the non-convergence of $\alpha$}
+
+The non-convergence of $\alpha$ is not a numerical artefact. It is a
+physical consequence of the finite-dimensional, unitary dynamics of
+the model: the joint system has $2(N+1)$ degrees of freedom, its
+spectrum is discrete, and unitary evolution produces quasi-periodic
+orbits, not monotonic decay. The apparent ``decay'' of $F_Q^{(\eta)}$
+in any finite window is an interference pattern, not a genuine
+power-law. Any genuine decay requires a continuum limit.
+
+\section{A Static-Bath Model: Quantum Brownian Motion}
+\label{sec:QBM}
+
+The simplest continuum model is to replace the discrete set of $N$
+modes by a fixed Ohmic spectral density. This is \emph{not} derived
+from the Wightman function of a field in FRW; it is a phenomenological
+closure, equivalent to coupling the detector to an external bath at
+fixed temperature $T_{\rm eff}$.
+
+\subsection{Spectral density and master equation}
+
+We adopt an Ohmic spectral density with exponential ultraviolet
+cutoff,
+\begin{equation}
+J(\omega) = \eta\,\omega\,e^{-\omega/\Lambda},
+\label{eq:J}
+\end{equation}
+where $\eta$ is a dimensionless coupling constant and $\Lambda$ is
+the cutoff frequency. In the Markovian regime, the reduced dynamics
+of the detector is described by the quantum Brownian motion master
+equation in the high-temperature limit,
+\begin{equation}
+\frac{d\sigma}{d\eta} = M\sigma + \sigma M^T + N,
+\label{eq:master}
+\end{equation}
+with drift matrix
+\begin{equation}
+M = \begin{pmatrix} 0 & 1/m \\ -m\omega_0^2 & -\gamma/m \end{pmatrix},
+\end{equation}
+and quantum noise matrix
+\begin{equation}
+N = \begin{pmatrix} 0 & 0 \\ 0 & m\gamma\omega_0\coth\!\left(\frac{\omega_0}{2T_{\rm eff}}\right) \end{pmatrix}.
+\label{eq:noise}
+\end{equation}
+The damping coefficient is $\gamma = \pi\eta/2$. The model relaxes to
+$\nu_\infty = \frac{1}{2}\coth(\omega_0/2T_{\rm eff})$, and the
+symplectic eigenvalue decays with rate $\Gamma = \gamma = \pi\eta/2$.
+This is mathematically exact for the Ohmic bath.
+
+\section{Exact FRW Treatment: Bath Dilution and Memory}
+\label{sec:FRW}
+
+The correct way to obtain the damping kernel for a Gaussian detector
+coupled to a scalar field in FRW is to compute it from the Wightman
+function of the field.
+
+\subsection{Wightman function and damping kernel}
+
+For a massless scalar field in a spatially flat FRW universe with
+$a(\eta) = \eta^n$ and in the Bunch--Davies vacuum, the rescaled mode
+functions are
+\begin{equation}
+u_k(\eta) = \sqrt{\frac{\pi|\eta|}{4}}\,H_\nu^{(2)}(k|\eta|),
+\qquad \nu = \left|n - \tfrac{1}{2}\right|,
+\end{equation}
+and the physical field is $\phi_k = u_k / a(\eta)$. We define the
+Wightman function as
+\begin{equation}
+W(\eta, \eta') = \frac{1}{2\pi^2}\,\frac{1}{a(\eta)a(\eta')}
+\int_0^\infty dk\,k^2\,u_k(\eta)\,u_k^*(\eta').
+\end{equation}
+The damping kernel that enters the non-Markovian equation of motion
+for the detector is
+\begin{equation}
+\gamma(\eta, \eta') = 2 g^2\,{\rm Im}\,W(\eta, \eta')\,\theta(\eta - \eta').
+\label{eq:gammaFRW}
+\end{equation}
+The effective damping rate at time $\eta$ is
+\begin{equation}
+\gamma_{\rm eff}(\eta) = \int_0^{\eta - \eta_{\min}} d\tau\,
+\gamma(\eta, \eta - \tau)\cos(\omega_0 \tau),
+\label{eq:gammaeff}
+\end{equation}
+with $\eta_{\min} \sim 1/\omega_0$.
+
+\subsection{Analytic cases and sign convention}
+\label{sec:dS_convention}
+
+In two cases, closed-form expressions are available. For radiation
+($n=1$), $u_k'' + k^2 u_k = 0$ (since $a''/a = 0$), and with the
+Bunch--Davies convention $u_k \sim e^{-ik\eta}$ for $k|\eta| \gg 1$,
+\begin{equation}
+{\rm Im}\,W_{\rm conf}(\eta,\eta') =
+-\frac{1}{4\pi^2 a(\eta)a(\eta')}\,
+\frac{2\Delta\varepsilon}{(\Delta^2 + \varepsilon^2)^2},
+\qquad \Delta = \eta - \eta'.
+\label{eq:Wconf}
+\end{equation}
+The negative sign follows from $\mathrm{Im}[e^{-ik\eta}e^{+ik\eta'}]
+= -\sin(k\Delta)$ for $\Delta > 0$. The corresponding $\gamma_{\rm
+eff}$ is negative, which in the convention of \eqref{eq:gammaeff}
+corresponds to positive damping. This is exact and has no infrared
+divergence.
+
+For de Sitter minimal ($n=-1$), we use the expanding branch $\eta < 0$
+with scale factor $a(\eta) = -1/(H\eta)$. The Bunch-Davies vacuum
+corresponds to the positive-frequency solution $\sim e^{-ik\eta}$ in
+the far past. With this convention, the analytic expression is
+\begin{equation}
+{\rm Im}\,W_{\rm dS}^{\rm bare} =
+-\frac{1}{4\pi^2}\left[\frac{2\eta\eta'\varepsilon\Delta}{(\Delta^2+\varepsilon^2)^2}
++ \arctan\!\left(\frac{\Delta}{\varepsilon}\right)
+- \frac{\Delta\varepsilon}{\Delta^2 + \varepsilon^2}\right].
+\label{eq:WdS}
+\end{equation}
+The bare value is negative for $\Delta > 0$ (anti-damping). The sign
+is fixed by the Bunch-Davies choice of $H^{(2)}$; it is not an
+artefact of the regulator. The $\arctan$ term dominates at late times
+and is the infrared remnant.
+
+For matter ($n=2$), the $k$-integral is computed numerically with a
+UV regulator. In all cases, we have verified that the qualitative
+behaviour (decay, sign change) is robust against the choice of
+regulator, as discussed next.
+
+\subsection{Robustness against UV regulators}
+\label{sec:robustness}
+
+The specific numerical values of $\gamma_{\rm eff}$ depend on the UV
+regulator $\varepsilon$ and on the numerical integration parameters.
+To verify that the qualitative conclusions do not depend on this
+choice, we have computed $\gamma_{\rm eff}$ using two smooth
+regulators: (i) exponential $e^{-\varepsilon k}$ and (ii) Gaussian
+$e^{-\varepsilon^2 k^2}$.
+
+A third regulator (sharp step at $k_{\max}$) was tested during
+development but excluded because it introduces Gibbs oscillations in
+the oscillatory $k$-integral, rendering the result numerically
+unstable. The oscillatory factor $u_k u_k^*$ combined with a
+discontinuous cutoff produces spurious high-frequency modes that
+dominate the $\tau$-integration. This is a known numerical artefact,
+not a physical effect.
+
+The results for the two smooth regulators are reported in
+Table~\ref{tab:robustness}. Two features are robust:
+
+\begin{itemize}
+\item \textbf{Robust: global decay.} In all backgrounds and for both
+regulators, $|\gamma_{\rm eff}|$ decreases with $\eta$ and approaches
+zero at late times. The static-bath prediction $\Gamma = \pi g^2/2$
+is not reproduced.
+
+\item \textbf{Robust: failure of Markovian dissipation.} In matter,
+$\gamma_{\rm eff}$ changes sign for both regulators, indicating
+memory effects (information returns to the detector from the field via
+particle creation). A Markovian dissipation term, which is by
+construction positive, cannot reproduce this.
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Background & Regulator & $\gamma_{\rm eff}$ (early) & $\gamma_{\rm eff}$ (late) \\
+\midrule
+Radiation & exp & Negative & Negative (decayed) \\
+Radiation & Gaussian & Negative & Negative (decayed) \\
+Matter & exp & Positive & Sign change \\
+Matter & Gaussian & Positive & Sign change \\
+de Sitter & exp & Negative (large) & Negative (decayed) \\
+de Sitter & Gaussian & Negative (large) & Negative (decayed) \\
+\bottomrule
+\end{tabular}
+\caption{Robustness of the effective damping rate against the choice
+of smooth UV regulator. The global decay and the failure of Markovian
+dissipation are invariant across regulators and across backgrounds.
+The magnitudes depend on the regulator and are not quoted as physical
+predictions.}
+\label{tab:robustness}
+\end{table}
+
+\subsection{Results}
+
+We have computed $\gamma_{\rm eff}(\eta)$ for the three backgrounds.
+The specific numerical values of $\gamma_{\rm eff}$ depend on the
+UV regulator, on the infrared subtraction scheme, and on the numerical
+integration parameters. They are therefore \emph{not} quoted here as
+physical predictions. What is robust across all choices is the
+qualitative behaviour, summarized in Table~\ref{tab:FRW}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccp{5cm}}
+\toprule
+Background & $n$ & $\gamma_{\rm eff}$ behaviour & Notes \\
+\midrule
+Radiation & $1$ & Negative, decays with $\eta$ &
+Exact conformal case; positive damping \\[2pt]
+Matter & $2$ & Oscillatory, sign change &
+Memory from particle creation; non-Markovian \\[2pt]
+de Sitter & $-1$ & Negative (anti-damping) &
+IR sensitive to subtraction; no constant limit \\
+\bottomrule
+\end{tabular}
+\caption{Qualitative behaviour of the effective damping rate from the
+exact FRW Wightman function. In no case does $\gamma_{\rm eff}$
+approach the static-bath prediction $\pi\eta/2$. The qualitative
+behaviour is robust across smooth regulator choices (see
+Table~\ref{tab:robustness}). The sign convention follows Bunch--Davies
+positive frequency, see Section~\ref{sec:dS_convention}.}
+\label{tab:FRW}
+\end{table}
+
+Three features are robust:
+\begin{enumerate}
+\item $|\gamma_{\rm eff}|$ decreases with $\eta$ rather than approaching
+a constant. The static-bath prediction $\Gamma = \pi g^2/2$ is not
+reproduced.
+\item In the matter regime, $\gamma_{\rm eff}$ exhibits sign-changing
+oscillations, indicating memory effects (information returns to
+the detector from the field via particle creation). A Markovian
+dissipation term, which is by construction positive, cannot reproduce
+this.
+\item In de Sitter, the massless minimally coupled field has an
+infrared divergence, but in all smooth regularization schemes
+$\gamma_{\rm eff}$ decays as $\eta \to 0^-$ rather than approaching a
+constant.
+\end{enumerate}
+
+\section{Comparison and Cosmological Implications}
+\label{sec:cosmo}
+
+The two continuum models give qualitatively different answers: the
+static bath gives exponential relaxation with $\Gamma = \pi\eta/2$
+independent of $a(\eta)$, while the FRW field gives suppression with
+the expansion plus oscillatory memory effects. Only the second
+corresponds to a scalar field in an expanding universe.
+
+\subsection{Temporal resolution in FRW}
+\label{sec:resolution_bound}
+
+In the FRW case, because $\gamma_{\rm eff}$ decays, the detector does
+not lose coherence at a constant rate. The bound on temporal
+resolution is therefore \emph{not} of the form
+$\Delta\tau \gtrsim (2/\pi\eta)(1+z)^{-1}$ obtained from the
+static-bath model. It weakens with time, becoming trivial at late
+times. The informational bound $\Delta\tau \gtrsim
+T_{\rm total}\,e^{-I_{\max}/2}$ discussed in the literature of
+autonomous clocks \citep{Erker2017,Woods2019} is a comparative
+constraint: with $I_{\max} \approx 0.26$ nats it gives a weak
+numerical bound ($\Delta\tau/T_{\rm total} \gtrsim 0.88$), not a sharp
+prediction.
+
+\subsection{Reinterpretation of the UAT intuition}
+
+The original UAT intuition---that the observer's temporal resolution
+is bounded by its informational connection to the field---survives
+the correction. What changes is the specific form of the bound: in
+FRW, the connection weakens with the expansion, so the bound weakens
+too. At early times ($z \gtrsim 1$), the detector is strongly coupled
+to the field; at late times, it is effectively decoupled.
+
+\section{What Is Not Claimed}
+\label{sec:honesty}
+
+For clarity, this paper does not claim:
+
+\begin{enumerate}
+\item That time runs at different rates for different observers.
+The observable is clock resolution, not clock rate.
+
+\item That the metric is modified, or that any cosmological
+parameter is altered. The background is standard $\Lambda$CDM.
+
+\item That the additive formalism of the original UAT is recoverable.
+It is not. The correct formalism is the modular one.
+
+\item That a power-law decay of clock resolution exists in
+finite-dimensional unitary systems. It does not.
+
+\item That the relaxation rate $\Gamma = \pi\eta/2$ of
+Section~\ref{sec:QBM} describes a detector coupled to a cosmological
+field. It does not. It describes a detector coupled to a static
+external bath.
+
+\item That the effective damping rate in FRW is constant. It is not;
+it decays with the expansion and exhibits oscillatory memory
+corrections.
+
+\item That the first failure of the Markovian approximation in
+curved spacetime is reported here. It is not. That failure is
+established in the literature \citep{HsiangHu2021,Waghmare2025}. What
+is new is the 3+1D Gaussian calculation with a full expansion history,
+the explicit comparison with the Ohmic closure, and the framing via
+modular information measures.
+
+\item That UAT precedes or anticipates the modular program of
+\citet{Chen2024, DeVuyst2025}. It does not. The convergence is
+independent and parallel; see Section~\ref{sec:relation}.
+\end{enumerate}
+
+\section{Future Work}
+\label{sec:future}
+
+The extensions of this work are:
+\begin{enumerate}
+\item \textbf{Full non-Markovian treatment with analytic regulators.}
+The numerical computation of $\gamma_{\rm eff}(\eta)$ uses a sharp
+UV cutoff. An analytic treatment with the correct distributional
+prescription would isolate the physical damping from the Lamb shift.
+\item \textbf{Massive field and conformal coupling.} For $m_\phi \neq
+0$ or nonminimal coupling $\xi \neq 1/6$, the mode functions have a
+different IR behaviour. In particular, the Gibbons--Hawking
+temperature emerges for $m_\phi \sim H$.
+\item \textbf{Full $\Lambda$CDM background with era transitions.}
+The present calculation uses power-law $a(\eta)$. The full
+$\Lambda$CDM case with radiation--matter and matter--dark-energy
+transitions could show whether the era boundaries leave a signature
+in $\gamma_{\rm eff}$.
+\item \textbf{Relation to the crossed-product algebra and
+quantum-reference-frame formulations}
+\citep{Chandrasekaran2022, Chen2026, DeVuyst2025}.
+\end{enumerate}
+
+\section{Conclusions}
+
+We have reformulated the original UAT/TAU intuition---time as a
+measure of causal connection between an event and an observer---as a
+computable problem in modular theory and quantum information. The
+reformulation yields:
+\begin{enumerate}
+\item \textbf{KMS verification.} The Unruh--DeWitt detector in
+Minkowski space satisfies the KMS condition at machine precision.
+\item \textbf{Information mutual.} $I(O{:}\phi)_{\max}$ converges
+with $N$ to $I_{\max} \approx 0.26$ nats. The power-law exponent
+$\alpha$ of the Fisher-information decay does not converge with $N$;
+the earlier value $\alpha \approx 0.72$ was an artefact.
+\item \textbf{The Markovian approximation fails in FRW.} A static
+Ohmic bath gives $\Gamma = \pi\eta/2$, but the exact Wightman function
+of a scalar field in FRW gives a $\gamma_{\rm eff}$ that is not
+constant, does not approach $\pi\eta/2$, and exhibits sign-changing
+oscillations (memory effects) in the matter and dark-energy regimes.
+The global decay is robust against the choice of smooth UV regulator.
+\end{enumerate}
+
+The comparison between the two continuum models is itself a
+methodological result: \emph{phenomenological closures of the
+continuum limit must be derived from the exact Wightman function of
+the field, not assumed.} The Ohmic bath gives the right answer for
+the wrong system.
+
+\section*{Data and Code Availability}
+
+All numerical results in this paper are reproducible from the Python
+scripts \texttt{etapaB\_v2.py} (finite-$N$), \texttt{etapaC\_v5.py}
+(static-bath QBM), \texttt{frw\_wightman.py} (exact FRW Wightman
+function), and \texttt{frw\_robustness.py} (robustness against smooth
+regulators). The scripts use only \texttt{numpy}, \texttt{scipy}, and
+\texttt{matplotlib}.
+
+\subsection*{Public development record}
+\label{sec:records}
+
+The UAT/TAU framework was developed independently by the author
+during 2025. For the reader's reference, the following public records
+document its development. All timestamps are from the originating
+platform and are not reconstructed.
+
+\begin{itemize}
+\item \textbf{June 2025.} First public release of the UAT/TAU
+framework on GitHub:
+\texttt{gh repo clone miguelpercu/tiempo-aplicable-unificado}.
+\item \textbf{11 June 2025.} Release of the equations repository on
+GitHub:
+\texttt{gh repo clone miguelpercu/ecuaciones-tiempos-aplicables}.
+\item \textbf{November 2025.} First Zenodo deposits of the UAT/TAU
+framework:
+\begin{itemize}
+\item UAT Theory: \texttt{10.5281/zenodo.17729221}
+\item UPC Principle: \texttt{10.5281/zenodo.18210808}
+\item Extended Deposit: \texttt{10.5281/zenodo.23432466}
+\end{itemize}
+\end{itemize}
+
+These records are provided for completeness. They document an
+independent development path and are not intended as a priority claim
+with respect to the modular program.
+
+\section*{Acknowledgments}
+
+The author acknowledges the use of large language models (KIMI IA,
+Deep IA, Meta IA) as technical assistants during the reformulation.
+All physical results and interpretations are the responsibility of the
+author. The author also thanks the editorial offices of INDTEC,
+CONICET, and \emph{Open Astronomy} for their processing of the
+original UAT/TAU submissions.
+
+\begin{thebibliography}{99}
+
+\bibitem{Percudani2025a}
+M.~\'A.~Percudani,
+\newblock \emph{Universal Applied Time (UAT/UCP): A Fundamental Theory of Cosmology from First Principles},
+\newblock Zenodo (2025), DOI: 10.5281/zenodo.17729221.
+
+\bibitem{Percudani2025b}
+M.~\'A.~Percudani,
+\newblock \emph{Unified Principle of Causality (UPC): Multiscale Homeostasis and the Bit of Authority},
+\newblock Zenodo (2025), DOI: 10.5281/zenodo.18210808.
+
+\bibitem{Percudani2025c}
+M.~\'A.~Percudani,
+\newblock \emph{Cosmological Memory of a Gaussian Detector in an Expanding Universe: Finite-N Dynamics and the Breakdown of the Markovian Approximation in FRW},
+\newblock Zenodo (2025), DOI: 10.5281/zenodo.23432466.
+
+\bibitem{Percudani2026}
+M.~\'A.~Percudani,
+\newblock \emph{Additive formalism and relational intuition:
+A case study in the foundations of cosmological time},
+\newblock in preparation (2026).
+
+\bibitem{Connes1973}
+A.~Connes,
+\newblock Une classification des facteurs de type III,
+\newblock \emph{Ann. Sci. \'Ec. Norm. Sup.} \textbf{6}, 133 (1973).
+
+\bibitem{Takesaki1970}
+M.~Takesaki,
+\newblock Tomita's theory of modular Hilbert algebras and its applications,
+\newblock \emph{Lecture Notes in Mathematics} \textbf{128}, Springer (1970).
+
+\bibitem{ConnesRovelli1994}
+A.~Connes and C.~Rovelli,
+\newblock Von Neumann algebra automorphisms and time--thermodynamics
+relation in generally covariant quantum theories,
+\newblock \emph{Class. Quantum Grav.} \textbf{11}, 2899 (1994).
+
+\bibitem{Chandrasekaran2022}
+V.~Chandrasekaran, R.~Longo, G.~Penington, and E.~Witten,
+\newblock An algebra of observables for de Sitter space,
+\newblock arXiv:2206.10780 (2022).
+
+\bibitem{Chen2024}
+Y.~Chen and G.~Penington,
+\newblock A clock is just a way to tell the time: gravitational
+algebras in cosmological spacetimes,
+\newblock arXiv:2406.02116 (2024).
+
+\bibitem{Chen2026}
+Y.~Chen, et al.,
+\newblock An algebra for covariant observers in de Sitter space,
+\newblock \emph{JHEP} \textbf{09}, 240 (2026), arXiv:2511.00622.
+
+\bibitem{Speranza2025}
+A.~Speranza,
+\newblock An intrinsic cosmological observer,
+\newblock arXiv:2504.07630 (2025).
+
+\bibitem{DeVuyst2025}
+J.~De Vuyst, S.~Eccles, P.~A.~Hoehn, and J.~Kirklin,
+\newblock Crossed products and quantum reference frames:
+on the observer-dependence of gravitational entropy,
+\newblock \emph{JHEP} \textbf{07}, 063 (2025), arXiv:2412.15502.
+
+\bibitem{Gomez2022}
+C.~G\'omez,
+\newblock Cosmology as a crossed product,
+\newblock arXiv:2207.06704 (2022).
+
+\bibitem{Espindola2026}
+L.~Esp\'indola and K.~Miyashita,
+\newblock The mini-Page curve in cosmology,
+\newblock arXiv:2607.08737 (2026).
+
+\bibitem{Unruh1976}
+W.~G.~Unruh,
+\newblock Notes on black-hole evaporation,
+\newblock \emph{Phys. Rev. D} \textbf{14}, 870 (1976).
+
+\bibitem{BirrellDavies1982}
+N.~D.~Birrell and P.~C.~W.~Davies,
+\newblock \emph{Quantum Fields in Curved Space},
+\newblock Cambridge University Press (1982).
+
+\bibitem{Caldeira1983}
+A.~O.~Caldeira and A.~J.~Leggett,
+\newblock Path integral approach to quantum Brownian motion,
+\newblock \emph{Physica A} \textbf{121}, 587 (1983).
+
+\bibitem{HuPazZhang1992}
+B.~L.~Hu, J.~P.~Paz, and Y.~Zhang,
+\newblock Quantum Brownian motion in a general environment,
+\newblock \emph{Phys. Rev. D} \textbf{45}, 2843 (1992).
+
+\bibitem{LoukoSatz2006}
+J.~Louko and A.~Satz,
+\newblock Transition rate of the Unruh-DeWitt detector in curved spacetime,
+\newblock \emph{Class. Quantum Grav.} \textbf{23}, 6321 (2006).
+
+\bibitem{Fukuma2014}
+M.~Fukuma, T.~Sakatani, and S.~Sugishita,
+\newblock Master equation for the Unruh-DeWitt detector in de Sitter space,
+\newblock \emph{Phys. Rev. D} \textbf{89}, 064003 (2014).
+
+\bibitem{Burgess2020}
+C.~P.~Burgess et al.,
+\newblock Hot cosmic qubits: late-time de Sitter evolution and decoherence,
+\newblock \emph{JHEP} \textbf{02}, 024 (2020).
+
+\bibitem{HsiangHu2021}
+J.-T.~Hsiang and B.-L.~Hu,
+\newblock Non-Markovianity in cosmology: Memories kept in a quantum field,
+\newblock arXiv:2107.04862 (2021).
+
+\bibitem{Waghmare2025}
+T.~Waghmare et al.,
+\newblock Covariant measures of non-Markovianity in curved spacetime,
+\newblock arXiv:2511.15365 (2025).
+
+\bibitem{Breuer2009}
+H.-P.~Breuer, E.-M.~Laine, and J.~Piilo,
+\newblock Measure for the degree of non-Markovian behavior of quantum processes,
+\newblock \emph{Phys. Rev. Lett.} \textbf{103}, 210401 (2009).
+
+\bibitem{Breuer2016}
+H.-P.~Breuer et al.,
+\newblock Colloquium: Non-Markovian dynamics in open quantum systems,
+\newblock \emph{Rev. Mod. Phys.} \textbf{88}, 021002 (2016).
+
+\bibitem{Erker2017}
+P.~Erker, M.~T.~Mitchison, R.~Silva, D.~K.~L.~Oi, S.~D.~Bartlett,
+and M.~Huber,
+\newblock Autonomous quantum clocks: does thermodynamics limit our
+ability to measure time?,
+\newblock \emph{Phys. Rev. X} \textbf{7}, 031022 (2017).
+
+\bibitem{Woods2019}
+M.~P.~Woods, R.~Silva, G.~P\"utz, S.~Stupar, and R.~Renner,
+\newblock Quantum clocks are more accurate than classical ones,
+\newblock \emph{PRA} \textbf{100}, 062115 (2019).
+
+\bibitem{Salecker1957}
+H.~Salecker and E.~P.~Wigner,
+\newblock Quantum limitations of the measurement of space-time distances,
+\newblock \emph{Phys. Rev.} \textbf{109}, 571 (1958).
+
+\bibitem{Braunstein1994}
+S.~L.~Braunstein and C.~M.~Caves,
+\newblock Statistical distance and the geometry of quantum states,
+\newblock \emph{Phys. Rev. Lett.} \textbf{72}, 3439 (1994).
+
+\bibitem{Pinel2012}
+O.~Pinel, P.~J.~Y.~Louis, and N.~J.~Cerf,
+\newblock Quantum metrology with a squeezed state of a mechanical
+oscillator,
+\newblock \emph{Phys. Rev. A} \textbf{85}, 010101 (2012).
+
+\bibitem{Safranek2015}
+D.~\v{S}afr\'anek, I.~Fuentes, et al.,
+\newblock Quantum parameter estimation using multi-mode Gaussian states,
+\newblock \emph{Phys. Rev. A} \textbf{91}, 012306 (2015).
+
+\bibitem{Eisert2003}
+J.~Eisert and M.~B.~Plenio,
+\newblock Introduction to the basics of entanglement theory,
+\newblock \emph{Int. J. Quant. Inf.} \textbf{1}, 479 (2003).
+
+\bibitem{Zych2011}
+M.~Zych, F.~Costa, I.~Pikovski, and \v{C}.~Brukner,
+\newblock Quantum interferometric visibility as a witness of general
+relativistic proper time,
+\newblock \emph{Nat. Commun.} \textbf{2}, 505 (2011).
+
+\bibitem{CastroRuiz2017}
+E.~Castro-Ruiz, F.~Giacomini, \v{C}.~Brukner, et al.,
+\newblock Entanglement of quantum clocks through gravity,
+\newblock \emph{PNAS} \textbf{114}, E2303 (2017).
+
+\bibitem{Giacomini2020}
+F.~Giacomini and \v{C}.~Brukner,
+\newblock Quantum mechanics and quantum field theory in a quantum
+reference frame,
+\newblock \emph{Phys. Rev. Res.} \textbf{2}, 033122 (2020).
+
+\end{thebibliography}
+
+\end{document}
